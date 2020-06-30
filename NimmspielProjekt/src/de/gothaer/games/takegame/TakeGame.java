@@ -1,20 +1,32 @@
 package de.gothaer.games.takegame;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import de.gothaer.games.Game;
+import de.gothaer.games.takegame.players.TakeGamePlayer;
 
 public class TakeGame implements Game {
 	private static final String ERROR_MESSAGE = "Ungültiger Zug";
-	private static final String USERPROMPT = "Es gibt %s Steine. Bitte nehmen Sie 1,2 oder 3.";
-	private Scanner scanner = new Scanner(System.in);
+	private List<TakeGamePlayer> players = new ArrayList<>();
+	
 	private int stones;
 	private int turn;
 	
 	public TakeGame() {
 		stones = 23;
-		
 	}
+
+	public void addPlayer(TakeGamePlayer player) {
+		players.add(player);
+	}
+	
+
+	public void removePlayer(TakeGamePlayer player) {
+		players.remove(player);
+	}
+	
 
 	@Override
 	public void play() {
@@ -23,48 +35,48 @@ public class TakeGame implements Game {
 		}
 	}
 
-	private boolean isGameOver() {
-		return stones < 1;
-	}
+	
 	
 	
 	private void executeTurns() {
-		humanTurn();
-		computerTurn();
+		for (TakeGamePlayer player : players) {
+			executeTurnWith(player);
+		}
 	}
 
-	private void humanTurn() {
+	private void executeTurnWith(TakeGamePlayer player) {
 		if(isGameOver()) 
 			return;
 		
 		
-		while(true) {
-			System.out.println(String.format(USERPROMPT, stones));
-			turn =scanner.nextInt();
-			if(turn >= 1 && turn <= 3) break;
-			System.out.println(ERROR_MESSAGE);
+		while(turnIsInvalide(player)) {
+			
+			display(ERROR_MESSAGE);
 		}
 		
-		terminateTurn("Spieler");
+		terminateTurn(player.getName());
 		
 	}
+	
 
-	private void computerTurn() {
-		if(isGameOver())
-			return;
-		
-		
-		final int zuege [] = {3,1,1,2};
-		turn = zuege[stones % 4];
-		System.out.println(String.format("Ich nehme %s Steine.", turn));
-		
-		terminateTurn( "Computer");
-		
+	private boolean turnIsInvalide(TakeGamePlayer player) {
+		turn = player.doTurn(stones);
+		return ! isTurnValid(); 
 	}
-
+	
 	private void terminateTurn(String spieler) {
 		updateBoard();
 		displayMessageOnLosing(spieler);
+	}
+	
+
+	
+	private void display(String message) {
+		System.out.println(message);
+	}
+	
+	private boolean isTurnValid() {
+		return turn >= 1 && turn <= 3;
 	}
 
 	private void updateBoard() {
@@ -73,8 +85,13 @@ public class TakeGame implements Game {
 
 	private void displayMessageOnLosing(String spieler) {
 		if(stones < 1) {
-			System.out.println(spieler + " hat verloren");
+			display(spieler + " hat verloren");
 		}
+	}
+	
+	
+	private boolean isGameOver() {
+		return stones < 1;
 	}
 
 }
