@@ -1,7 +1,6 @@
 package de.application;
 
 import de.gothaer.client.GameClient;
-import de.gothaer.games.Game;
 import de.gothaer.games.takegame.TakeGame;
 import de.gothaer.games.takegame.players.ComputerPlayer;
 import de.gothaer.games.takegame.players.HumanPlayer;
