@@ -9,57 +9,72 @@ public class TakeGame implements Game {
 	private static final String USERPROMPT = "Es gibt %s Steine. Bitte nehmen Sie 1,2 oder 3.";
 	private Scanner scanner = new Scanner(System.in);
 	private int stones;
-	private boolean gameover;
+	private int turn;
 	
 	public TakeGame() {
 		stones = 23;
-		gameover = false;
+		
 	}
 
 	@Override
 	public void play() {
-		while( ! gameover) {
+		while( ! isGameOver()) {
 			executeTurns();
 		}
 	}
 
+	private boolean isGameOver() {
+		return stones < 1;
+	}
+	
+	
 	private void executeTurns() {
 		humanTurn();
 		computerTurn();
 	}
 
 	private void humanTurn() {
-		int turn;
+		if(isGameOver()) 
+			return;
+		
+		
 		while(true) {
 			System.out.println(String.format(USERPROMPT, stones));
 			turn =scanner.nextInt();
 			if(turn >= 1 && turn <= 3) break;
 			System.out.println(ERROR_MESSAGE);
 		}
-		stones -= turn;
+		
+		terminateTurn("Spieler");
 		
 	}
 
 	private void computerTurn() {
-		int turn;
+		if(isGameOver())
+			return;
+		
+		
 		final int zuege [] = {3,1,1,2};
-		
-		if(stones < 1) {
-			System.out.println("Du Loser");
-			gameover = true;
-			return;
-		}
-		
-		if(stones == 1) {
-			System.out.println("Du hast nur Glück gehabt");
-			gameover = true;
-			return;
-		}
-		
 		turn = zuege[stones % 4];
 		System.out.println(String.format("Ich nehme %s Steine.", turn));
-		stones -= turn;
 		
+		terminateTurn( "Computer");
+		
+	}
+
+	private void terminateTurn(String spieler) {
+		updateBoard();
+		displayMessageOnLosing(spieler);
+	}
+
+	private void updateBoard() {
+		stones -= turn;
+	}
+
+	private void displayMessageOnLosing(String spieler) {
+		if(stones < 1) {
+			System.out.println(spieler + " hat verloren");
+		}
 	}
 
 }
