@@ -60,14 +60,9 @@ public abstract class AbstractGame<Turn, Board> implements Game {
 	
 
 	private void executeTurnWith(Player<Turn, Board> player) {
-		if(isGameOver()) 
-			return;
-		
-		
-		while(turnIsInvalide(player)) {
-			
-			display(ERROR_MESSAGE);
-		}
+		if(isGameOver()) return;
+	
+		while(turnIsInvalide(player)) 	display(ERROR_MESSAGE);
 		
 		terminateTurn(player);
 		

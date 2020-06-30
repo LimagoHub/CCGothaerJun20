@@ -24,7 +24,7 @@ public class TakeGame extends AbstractGame<Integer, Integer> {
 	
 	
 	protected boolean isGameOver() {
-		return getBoard() < 1;
+		return getBoard() < 1 || getPlayers().isEmpty();
 	}
 
 }
